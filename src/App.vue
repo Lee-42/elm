@@ -28,8 +28,7 @@
  *导入header组件
  */
 import Header from './components/header/Header.vue'
-
-
+import Goods from './components/goods/Goods.vue'
 
 const ERR_OK = 0;
 
@@ -51,7 +50,8 @@ export default {
     });
   },
   components: {
-    'v-header':Header
+    'v-header':Header,
+    'v-goods':Goods,
   }
 }
 </script>
