@@ -29,6 +29,8 @@
  */
 import Header from './components/header/Header.vue'
 
+
+
 const ERR_OK = 0;
 
 export default {
@@ -48,7 +50,6 @@ export default {
       }
     });
   },
-
   components: {
     'v-header':Header
   }
