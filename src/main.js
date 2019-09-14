@@ -4,6 +4,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 import app from './App'
+import './common/fonts/style.css'
 
 //使用vue-router组件
 Vue.use(VueRouter)

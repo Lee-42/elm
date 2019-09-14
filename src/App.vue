@@ -17,7 +17,7 @@
       </div>
     </div>
   <!--这里是内容-->  
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
 
   </div>
 </template>
@@ -45,7 +45,7 @@ export default {
       // console.log(response.body)
       if(response.errno === ERR_OK){
         this.seller = response.data
-        console.log(this.seller)
+        // console.log(this.seller)
       }
     });
   },
