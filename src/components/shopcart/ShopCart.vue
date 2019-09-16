@@ -1,6 +1,6 @@
 <template>
     <div class="shopcart">
-        <div class="shop-content">
+        <div class="shop-content" @click="toggleList">
             <div class="content-left">
                 <div class="logo-wrapper">
                     <div class="logo" :class="{'highlight':totalCount>0}">
@@ -17,10 +17,37 @@
                 </div>
             </div>
         </div>
+        <div class="ball-container">
+            <div transition="drop" class="ball" v-for="(ball,index) in balls" :key="index" v-show="ball.show">
+                <div class="inner"></div>
+            </div>
+        </div>
+        <div class="shopcart-list" v-show="listShow">
+            <div class="list-header">
+                <h1 class="title">购物车</h1>
+                <h1 class="empty">清空</h1>
+            </div>
+            <div class="list-content">
+                <ul>
+                    <li class="food" v-for="food in selectFoods" :key="food.count">
+                        <span class="name">{{food.name}}</span>
+                        <div class="price">
+                            <span>￥{{food.price*food.count}}</span>
+                        </div>
+                        <div class="cartcontrol-wrapper">
+                            <carcontrol :food="food"></carcontrol>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+
+import CarControl from '../cartcontrol/CartControl.vue'
+
 
 export default {
 
@@ -40,7 +67,31 @@ export default {
             }
         }
     },
+    data() {
+        return {
+            balls:[
+                {
+                    show:false
+                },
+                {
+                    show:false
+                },
+                {
+                    show:false
+                },
+                {
+                    show:false
+                },
+                {
+                    show:false
+                }
+            ],
+            dropBall:[], //已经下落的小球
+            fold:true   //默认折叠
+        }
+    },
     components:{
+        'carcontrol':CarControl
     },
     computed:{
         totalPrice(){
@@ -73,6 +124,25 @@ export default {
             }else{
                 return 'enough'
             }
+        },
+        listShow(){
+            if(!this.totalCount){
+                this.fold = true    //状态由折叠变化为展开
+                return false;   //列表展开
+            }
+            let show = !this.fold
+            return show;    //
+        }
+    },
+    methods:{
+        drop(el){
+
+        },
+        toggleList(){
+            if(!this.totalCount){
+                return 1
+            }
+            this.fold = !this.fold
         }
     }
 }
@@ -194,6 +264,99 @@ export default {
             }
         }
     }
+
+    .ball-container{
+
+        .ball{
+            position fixed;
+            left 32px;
+            bottom 22px;
+            z-index 200;
+
+            .drop-transition{
+                transition all 0.4s ;
+
+                .inner{
+                    width 16px;
+                    height 16px;
+                    border-radius 50%;
+                    background rgb(0,160,220);
+                    transition all 0.4s;
+                }
+            }
+        }
+    }
+
+    .shopcart-list{
+        position absolute;
+        top 0px;
+        left 0px;
+        z-index 10;
+        width 100%;
+
+        // &.fold-transition {
+        //     transition all 0.5 ;
+        //     transform translate3d(0,-100%,0);
+        // }
+        // &.fold-enter,.fold-leave {
+        //     transform translate3d(0,0,0);
+        // } 
+
+        .list-header{
+            height 40px;
+            line-height 40px;
+            padding 0 18px;
+            background #f3f5f7;
+            border-bottom 2px solid rgba(7,17,27,0.1);
+
+            .title{
+                float left;
+                font-size 14px;
+                color rgb(7,17,27);
+            }
+            .empty{
+                
+                float right;
+                font-size 14px;
+                color rgb(0,160,220);
+            }
+        }
+        .list-content{
+            padding 0 18px;
+            max-height 217px;
+            // overflow:hidden;
+            background #FFF;
+
+            .food{
+                position relative;
+                padding 12px 0;
+                box-sizing border-box;
+                border 1px solid rgba(7,17,27,0.1);
+
+                .name{
+                    line-height 24px;
+                    font-size 14px;
+                    color rgb(7,17,27);
+                }
+                .price{
+                    position absolute;
+                    right 90px;
+                    bottom 12px;
+                    line-height 24px;
+                    font-size 14px;
+                    font-weight 700;
+                    color rgb(240,20,20);
+                }
+                .cartcontrol-wrapper{
+                    position absolute;
+                    right 0;
+                    bottom 6px;
+
+                }
+            }
+        }
+    }
+      
 }
 
 </style>
