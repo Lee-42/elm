@@ -1,12 +1,12 @@
 <template>
     <div class='ratingselect'>
         <div class="rating-type">
-            <span class="block positive" :class="{'positive-active':selectType===2}">{{desc.all}}<span class="count">47</span></span>
-            <span class="block positive" :class="{'positive-active':selectType===0}">{{desc.positive}}<span class="count">40</span></span>
-            <span class="block negative" :class="{'negative-active':selectType===1}">{{desc.negative}}<span class="count">7</span></span>
+            <span @click="select(2,$event)" class="block positive" :class="{'positive-active':selectType===2}">{{desc.all}}<span class="count">{{ratings.length}}</span></span>
+            <span @click="select(0,$event)" class="block positive" :class="{'positive-active':selectType===0}">{{desc.positive}}<span class="count">{{positives.length}}</span></span>
+            <span @click="select(1,$event)" class="block negative" :class="{'negative-active':selectType===1}">{{desc.negative}}<span class="count">{{negatives.length}}</span></span>
         </div>
-        <div class="switch">
-            <span class="icon-check_circle" :class="{'icon-check_circle-on':onlyContent}"></span>
+        <div class="switch" @click="toggleContent($event)">
+            <span  class="icon-check_circle" :class="{'icon-check_circle-on':onlyContent}"></span>
             <span class="text">只看有内容的评价</span>
         </div>
     </div>
@@ -15,7 +15,7 @@
 <script>
 
 
-const POSITI = 0;
+const POSITIVE = 0;
 const NEGATIVE = 1;
 const ALL = 2;
 
@@ -45,6 +45,34 @@ export default {
                     negative:'不满意'
                 }
             }
+        }
+    },
+    methods:{
+        select(type,event){
+            if(!event._constructed){
+                return;
+            }
+            this.selectType = type;
+            this.$emit('ratingType-select',type);
+        },
+        toggleContent(event){
+            if(!event._constructed){
+                return;
+            }
+            this.onlyContent = !this.onlyContent;
+            this.$emit('content-toggle');
+        },
+    },
+    computed:{
+        positives(){
+            return this.ratings.filter((rating) => {    //filter对象是对ratings数组做过滤
+                return this.rateType === POSITIVE;
+            })  
+        },
+        negatives(){
+            return this.ratings.filter((rating) => {    //filter对象是对ratings数组做过滤
+                return this.rateType === NEGATIVE;
+            })  
         }
     }
 }
@@ -110,6 +138,7 @@ export default {
         }
         .text{
             font-size 12px;
+            vertical-align middle;
         }
     }
 }

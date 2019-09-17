@@ -31,7 +31,21 @@
                 <v-split></v-split>
                 <div class="rating">
                     <h1 class="title">商品评价</h1>
-                    <v-ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></v-ratingselect>
+                    <!--  -->
+                    <v-ratingselect @ratingType-select="ratingTypeSelect" @content-toggle="contentToggle" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></v-ratingselect>
+                </div>
+                <div class="rating-wrapper">
+                    <ul class="" v-show="food.ratings && food.ratings.length">
+                        <li  class="rating-item" v-for="rating in food.ratings" v-show="needShow(rating.ratingType,rating.text)" :key="rating.rateTime">
+                            <div class="user">
+                                <span class="name">{{rating.username}}</span>
+                                <img :src="rating.avatar" width="12px" height="12px" class="avatar">
+                            </div>
+                            <div class="time">{{rating.rateTime  }}</div>
+                            <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"><span class="text">{{rating.text}}</span></span>
+                        </li>
+                    </ul>
+                    <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评价</div>
                 </div>    
             </div>    
         </div>
@@ -47,6 +61,8 @@ import CartControl from '../cartcontrol/CartControl.vue'
 import Split from '../split/Split.vue'
 //导入ratingselect组件
 import RatingSelect from '../ratingselect/RatingSelect.vue'
+//导入时间戳过滤器
+// import { formatDate } from '../../common/js/date.js'
 //导入Vue
 import Vue from 'vue'
 
@@ -87,11 +103,13 @@ export default {
                 }else{
                     this.scroll.refresh()
                 }
-
-                // this.scroll = new BScroll(this.$refs.foods,{
-                //     click:true
-                // })
             })
+        },
+        ratingTypeSelect(type){
+            this.selectType = type;
+        },
+        contentToggle(){
+            this.onlyContent = !this.onlyContent;
         },
         back(){
             this.showFlag = false;
@@ -102,7 +120,24 @@ export default {
                 return;
             }
             Vue.set(this.food,'count',1);
+        },
+        needShow(type,text){
+            if(this.onlyContent && !text){
+                return false;
+            }
+            if(this.selectType === ALL){
+                return true;
+            }else{
+                return type === this.selectType;
+            }
         }
+    },
+    filters:{
+        // formatDate(time){           //time是一个时间戳参数
+        //     let date = new Date(time)	//将time转为一个date对象,再把date对象转换为yyyy-MM-dd ss:mm的格式
+        //     return formatDate(date,'yyyy-MM-dd hh:mm')
+        //     //这个formatDate方法我们希望用一个更通用的方法去写。因为很多组件都可能调用这个方法,那就放在date.js里吧
+	    // }
     },
     components:{
         'v-cartcontrol':CartControl,
@@ -241,6 +276,66 @@ export default {
                 margin-left 18px;
                 font-size 14px;
                 color rgb(7,17,27);
+            }
+        }
+
+        .rating-wrapper{
+            padding 0 18px;
+
+            .rating-item{
+                position relative;
+                padding 14px 0px; 
+                border 1px solid rgba(7,17,27,0.1);
+
+                .user{
+                    position absolute;
+                    right 0px;
+                    top 16px;
+                    line-height 12px;
+                    font-size 0px;
+
+                    .name{
+                        display inline-block;
+                        vertical-align top;
+                        margin-right 6px;
+                        font-size 10px;
+                        color rgb(147,153,159);
+                    }
+                    .avatar{
+                        border-radius 50%;
+                    }
+                }
+
+                .time{
+                    margin-bottom 6px;
+                    line-height 12px;
+                    font-size 10px;
+                    color rgb(147,153,159);
+                }
+
+                .text{
+                    line-height 12px;
+                    font-size 12px;
+                    color rgb(7,17,27);
+                }
+                
+                .icon-thumb_up,.icon-thumb_down{
+                    line-height 24px;
+                    margin-right 4px;
+                    font-size 12px;
+                }
+                .icon-thumb_up{
+                    color rgb(0,160,220);
+                }
+                .icon-thumb_down{
+                    color rgb(7,17,27)
+                }
+            }   
+            
+            .no-wrapper{
+                padding 12px 0px;  
+                font-size 12px;
+                line-height 12px;
             }
         }
     }
