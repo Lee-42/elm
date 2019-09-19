@@ -91,7 +91,7 @@ export default {
     watch:{
         'seller'(){
             this._initScroll()
-            // this._initPic()
+            this._initPic()
         }
     },
     mounted(){

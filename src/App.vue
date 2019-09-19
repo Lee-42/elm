@@ -43,7 +43,7 @@ export default {
       seller:{
         id:(() => { //立即执行函数
           let queryParam = urlParse()
-          console.log(queryParam);
+          // console.log(queryParam);
           return queryParam.id;
         })()
       }
