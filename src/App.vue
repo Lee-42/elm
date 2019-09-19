@@ -17,7 +17,10 @@
       </div>
     </div>
   <!--这里是内容-->  
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+        <router-view :seller="seller" keep-alive></router-view>    
+    </keep-alive>
+   
 
   </div>
 </template>
@@ -29,21 +32,31 @@
  */
 import Header from './components/header/Header.vue'
 import Goods from './components/goods/Goods.vue'
+import { urlParse } from './common/js/util.js'
+
 
 const ERR_OK = 0;
 
 export default {
   data() {
     return {
-      seller:{}
+      seller:{
+        id:(() => { //立即执行函数
+          let queryParam = urlParse()
+          console.log(queryParam);
+          return queryParam.id;
+        })()
+      }
     }
   },
 
   created() {
-    this.$http.get('api/seller').then( (response) => {
+    this.$http.get('api/seller?'+this.seller.id).then( (response) => {
       response = response.body
       // console.log(response.body)
       if(response.errno === ERR_OK){
+        console.log(this.seller.id);
+        this.seller = Object.assign({},this.seller.id)
         this.seller = response.data
         // console.log(this.seller)
       }
